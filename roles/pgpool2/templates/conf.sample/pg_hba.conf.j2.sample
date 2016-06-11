@@ -1,0 +1,60 @@
+# Database administrative login by Unix domain socket
+local   all         all                               peer
+
+# TYPE  DATABASE    USER        ADDRESS               METHOD
+# "local" is for Unix domain socket connections only
+local   all         all                               md5
+
+# IPv4 local connections:
+host    all         all          127.0.0.1/32         trust
+
+# IPv6 local connections:
+host    all         all         ::1/128                trust
+
+
+# Dalkia
+host    all    {{ dalkia_pg_user }}    172.17.0.0/16     md5
+host    all    {{ dalkia_pg_user }}    {{ ip_prod1 }}/32    md5
+host    all    {{ dalkia_pg_user }}    {{ ip_prod2 }}/32    md5
+
+# Replication
+host    replication    rep    127.0.0.1/32          md5
+host    replication    rep    {{ ip_prod1 }}/32    md5
+host    replication    rep    {{ ip_prod2 }}/32    md5
+
+# pgPool
+host    all             all          {{ hostvars[inventory_hostname][pg_interface].ipv4.address }}/32  md5
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# Allow replication connections from localhost, by a user with the
+# replication privilege.
+# local   replication    postgres                                peer
+# host    replication    postgres        127.0.0.1/32            md5
+# host    replication    postgres        ::1/128                 md5
+
+# added
+# host    all         all         {{ ip_prod1 }}/24      trust
+# host    all         all         {{ ip_prod2 }}/24      trust
+# host    postgres    all         {{ ip_virtual }}/24    trust
+# host    postgres    all         {{ ip_prod1 }}/24      trust
+# host    postgres    all         {{ ip_prod2 }}/24      trust
+# host    dalkia      all         {{ ip_virtual }}/24    trust
+# host    dalkia      all         {{ ip_prod1 }}/24      trust
+# host    dalkia      all         {{ ip_prod2 }}/24      trust
+
+# public ip freebox
+# host    all         all           {{ ip_public }}/32      trust
+

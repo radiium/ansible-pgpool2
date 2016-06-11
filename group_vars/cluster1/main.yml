@@ -1,0 +1,17 @@
+---
+
+ip_virtual: 192.168.33.40
+ip_prod1: 192.168.33.42
+ip_prod2: 192.168.33.43
+
+interface: eth1
+
+
+
+rep_passwd: reppass
+rep_md5_passwd: 2a775affcb089fd7305208e73750672c
+
+postgres_passwd: postgrespass
+postgres_md5_passwd: d8cef09ccc3e23bf402c6b279e6bf547
+postgres_md5_passwd_auth: md5c1f7bc6fc1857af0806e7858e6e38484
+# postgres:md5c1f7bc6fc1857af0806e7858e6e38484

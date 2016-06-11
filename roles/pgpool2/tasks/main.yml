@@ -1,0 +1,16 @@
+---
+
+###############################
+#          PGPOOL II
+###############################
+
+# 4 INSTALL
+- include: 1_pgpool_install.yml
+
+# 5 CONFIG
+- include: 2_pgpool_conf.yml
+
+## Start ppool2
+#- name: start pgpool
+#  service: name='pgpool2' state=started
+

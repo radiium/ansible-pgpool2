@@ -1,0 +1,50 @@
+---
+
+#- stat: path=/tmp/pgpool-II-3.5.2/
+#  register: pgpool
+
+# Download and extract
+- name: download pgpool-II-3.5.2
+  get_url: url="http://www.pgpool.net/download.php?f=pgpool-II-3.5.2.tar.gz" dest="/tmp/"
+#  when: pgpool.stat.isdir is defined and pgpool.stat.isdir
+
+- name: Extract pgpool-II archive
+  unarchive: src="/tmp/pgpool-II-3.5.2.tar.gz" dest="/tmp/" copy=no
+#  when: pgpool.stat.isdir is defined and pgpool.stat.isdir
+
+
+
+
+
+
+- stat: path=/usr/local/etc/pool_passwd
+  register: pass
+
+# Install pgpool2
+- name: Running ./configure for pgpool2
+  command: sudo {{ item }} chdir='/tmp/pgpool-II-3.5.2'
+  with_items:
+    - ./configure
+#  become: yes
+#  become_user: sudo
+#  when: pass.stat.isdir is defined and pass.stat.isdir
+
+- name: Running "make" for pgpool2
+  command: sudo {{ item }} chdir='/tmp/pgpool-II-3.5.2'
+  with_items:
+    - make
+#  become: yes
+#  become_user: sudo
+#  when: pass.stat.isdir is defined and pass.stat.isdir
+
+- name: Running "make install" for pgpool2
+  command: sudo {{ item }} chdir='/tmp/pgpool-II-3.5.2'
+  with_items:
+    - make install
+#  become: yes
+#  become_user: sudo
+#  when: pass.stat.isdir is defined and pass.stat.isdir
+
+
+# Update PATH with pgpool's /bin directory
+#- lineinfile: dest=/etc/environment line='PATH="{{ ansible_env.PATH }}:{{ pgpool2_path }}/bin"' state=present regexp='PATH="{{ ansible_env.PATH }}"'

@@ -1,0 +1,5 @@
+---
+
+- name: restart postgres
+  command: /etc/init.d/postgresql restart
+

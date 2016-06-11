@@ -1,0 +1,34 @@
+---
+
+# Download and extract
+- name: download pgpool-II-3.5.2
+  get_url: url="http://www.pgpool.net/download.php?f=pgpool-II-3.5.2.tar.gz" dest="/tmp/"
+
+- name: Extract pgpool-II archive
+  unarchive: src="/tmp/pgpool-II-3.5.2.tar.gz" dest="/tmp/" copy=no
+
+
+# Install pgpool2
+- name: Running ./configure for pgpool2
+  command: sudo {{ item }} chdir='/tmp/pgpool-II-3.5.2'
+  with_items:
+    - ./configure
+#  become: yes
+#  become_user: sudo
+
+- name: Running "make" for pgpool2
+  command: sudo {{ item }} chdir='/tmp/pgpool-II-3.5.2'
+  with_items:
+    - make
+#  become: yes
+#  become_user: sudo
+#  when: pass.stat.isdir is defined and pass.stat.isdir
+
+- name: Running "make install" for pgpool2
+  command: sudo {{ item }} chdir='/tmp/pgpool-II-3.5.2'
+  with_items:
+    - make install
+#  become: yes
+#  become_user: sudo
+#  when: pass.stat.isdir is defined and pass.stat.isdir
+

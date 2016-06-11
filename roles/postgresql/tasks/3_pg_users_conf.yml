@@ -1,0 +1,37 @@
+---
+
+# Set postgres user password
+- name: Set postgres user password
+  user:
+    name=postgres
+    password={{postgres_passwd}}
+    update_password=always
+  notify: restart postgres
+
+# Allow postgres user to execute ifconfig and arping
+- name: Create directory for ifconfig and arping
+  file:
+    state=directory
+    path=/home/postgres/sbin
+    owner=postgres
+    group=postgres
+    mode=0700
+
+# Copy ifconfig and arping
+# Work only from ansible version 2.0
+- name: Copy ifconfig and arping
+  copy: src={{ item.src }} dest=/home/postgres/sbin/{{ item.dest }} remote_src=true mode=4755
+  with_items:
+    - { src: '/sbin/ifconfig', dest: 'ifconfig'}
+    - { src: '/usr/bin/arping', dest: 'arping'}
+
+# Set rep user (for postgres replication)
+- name: Create rep postgresql user
+  postgresql_user:
+    name=rep
+    password={{rep_passwd}}
+    role_attr_flags=REPLICATION,LOGIN
+  become: yes
+  become_user: postgres
+  notify: restart postgres
+

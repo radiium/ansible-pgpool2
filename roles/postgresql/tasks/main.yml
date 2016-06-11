@@ -1,0 +1,18 @@
+---
+
+#############################
+#      PostgreSQL-9.5
+#############################
+
+- name: ensure apt cache is up to date
+  apt: update_cache=yes
+
+# 1 INSTALL
+- include: 1_pg_install.yml
+
+# 2 CONFIG
+- include: 2_pg_conf.yml
+
+# 3 USERS CONFIG
+- include: 3_pg_users_conf.yml
+

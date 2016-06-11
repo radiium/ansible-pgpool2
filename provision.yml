@@ -1,0 +1,14 @@
+---
+
+- name: Setup postgres cluster (prod1 and prod2)
+  hosts: cluster_group
+  remote_user: root
+  become: yes
+  become_method: sudo
+  roles:
+    - basics
+    - postgresql
+    - ssh
+    - pgpool2
+#    - ufw
+#    - unison

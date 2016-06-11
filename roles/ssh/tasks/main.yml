@@ -1,0 +1,60 @@
+---
+
+- debug: msg={{ inventory_hostname }}
+
+
+- name: Copy ssh keys on cluster hosts for root user
+  copy:
+    src={{ item }}
+    dest=/root/.ssh/
+    mode=600
+  with_items:
+    - id_rsa.pub
+    - id_rsa
+  become: yes
+  become_user: root
+
+
+- name: Copy ssh keys on cluster hosts for postgres user
+  copy:
+    src={{ item }}
+    dest=/var/lib/postgresql/.ssh/
+    mode=600
+  with_items:
+    - id_rsa.pub
+    - id_rsa
+  become: yes
+  become_user: postgres
+
+
+
+- name: Copy authorized keys for SSH connection root user
+  authorized_key:
+         user=root
+         key="{{ lookup('file', item) }}"
+  with_fileglob:
+    - "host_files/{{ inventory_hostname }}/files/public_keys/*.pub"
+
+
+- name: Copy authorized keys for SSH connection postgres user
+  authorized_key:
+         user=postgres
+         key="{{ lookup('file', item) }}"
+  with_fileglob:
+    - "host_files/{{ inventory_hostname }}/files/public_keys/*.pub"
+
+- name: Ensure NO StrictHostKeyChecking
+  lineinfile:
+    dest=/etc/ssh/ssh_config
+    state=present
+    line="StrictHostKeyChecking no"
+
+
+# Firewall config
+- name: Allow new firewall rules for postgres
+  ufw: rule=allow src={{ item }}
+  with_items:
+  - "{{ ip_prod1 }}"
+  - "{{ ip_prod2 }}"
+  - "{{ ip_virtual }}"
+

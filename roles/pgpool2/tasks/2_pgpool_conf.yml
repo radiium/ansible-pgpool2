@@ -1,0 +1,98 @@
+---
+
+# pgpool2 pid directory
+- name: Create storage pid directory
+  file:
+    state=directory
+    path=/var/run/pgpool/
+    recurse=yes
+    owner=postgres
+    group=postgres
+    mode=2775
+
+# pgpool2 log directory
+- name: Create storage log directory
+  file:
+    state=directory
+    path=/var/log/pgpool/
+    recurse=yes
+    owner=postgres
+    group=postgres
+    mode=2775 
+
+# pgpool2 configuration
+- name: Configure pool_hba.conf
+  template: 
+    src=pool_hba.conf.j2
+    dest=/usr/local/etc/pool_hba.conf
+    owner=root
+    group=root
+    mode=0644
+
+- name: Configure pgpool.conf
+  template: src=pgpool.conf.j2
+    dest=/usr/local/etc/pgpool.conf
+    owner=root
+    group=root
+    mode=0644
+
+- name: Configure pcp.conf
+  template: src=pcp.conf.j2
+    dest=/usr/local/etc/pcp.conf
+    owner=root
+    group=root
+    mode=0644
+
+# pgpool2 password authentification
+- name: Configure pool_passwd
+  template: src=pool_passwd.j2
+    dest=/usr/local/etc/pool_passwd
+    owner=postgres
+    group=postgres
+    mode=0644
+
+## install pgpool2 extensions
+#- name: Install pgpool-recovery extension
+#  shell: psql -f /usr/share/postgresql/9.5/extension/{{ item }} template1
+#  with_items:
+#    - pgpool-recovery.sql
+#    - pgpool-regclass.sql
+#  become: yes
+#  become_user: postgres
+# not working now
+#- postgresql_ext: name=pgpool_recovery.sql db=template1
+#  sudo: yes
+#  sudo_user: postgres
+#- postgresql_ext: name=pgpool_regclass.sql db=template1
+#  sudo: yes
+#  sudo_user: postgres
+
+
+# Set permisions
+#- name: Set permissions on /sbin/ifconfig
+#  file:
+#    path=/sbin/ifconfig
+#    mode=6755
+
+#- name: Set permissions on /usr/sbin/arping
+#  file:
+#    path=/usr/sbin/arping
+#    mode=6755
+
+- name: Allow a user postgres to run commands
+  copy:
+    src=sudoers
+    dest=/etc/sudoers.d/postgres
+    owner=root
+    group=root
+    mode=0755
+
+# pgpool2 init script
+- name: Copy the pgpool2 init script
+  copy:
+    src=pgpool2.init.d
+    dest=/etc/init.d/pgpool2
+    owner=root
+    group=root
+    mode=0755
+
